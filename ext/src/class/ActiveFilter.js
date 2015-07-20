@@ -16,18 +16,17 @@ var ActiveFilter = (function () {
   _createClass(ActiveFilter, [{
     key: "engage",
     value: function engage() {
-      var timeLeft = filter.timeAllowed - timeSpent
-      //alarm create(filter.filterPattern, {delayInMinutes: timeLeft})
-      ;
+      var timeLeft = filter.timeAllowed - timeSpent;
+      chrome.alarms.create(filter.filterPattern, { delayInMinutes: timeLeft });
     }
   }, {
     key: "disengage",
-    value: function disengage() {}
+    value: function disengage() {
+      chrome.alarms.get(filter.filterPattern);
+      chrome.alarms.clear(filter.filterPattern);
+      timeSpent = (new Date.now() - alarm.scheduledTime) / (60 * 1000);
+    }
   }]);
 
   return ActiveFilter;
 })();
-
-//alarm get(filter.filterPattern)
-//alarm clear(filter.filterPattern)
-//timeSpent = (new Date.now() - alarm.scheduledTime)/(60 * 1000)
