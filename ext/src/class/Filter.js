@@ -1,33 +1,12 @@
-/*
-The base for filters used in usage-monitoring extensions.
-Contributing authors : Gabriel Dupont-Francoeur
+"use strict";
 
-*/
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-/*-------------------------------------Filter class------------------------------------------*/
+var Filter = function Filter(filterPattern, timeAllowed, timeUpPolicy, expirationPolicy) {
+    _classCallCheck(this, Filter);
 
-//Contructor.
-var Filter = function(filterPattern,timeAllowed){
-	this.filterPattern = filterPattern;
-	this.timeAllowed = timeAllowed;
-	
-};
-
-//Determines the action taken after the time allowed has counted down to zero
-Filter.prototype.timeUpPolicy = function(){
-	
-	//TODO
-};
-
-//Determines the action taken after the filter has expired
-Filter.prototype.expirationPolicy = function(){
-	
-	//TODO
-};
-
-/*------------------------ActiveFilter class (inherits from filter)----------------------------*/
-//Consider splitting in two files
-function ActiveFilter(filterPattern, timeAllowed,timeOfActivation){
-	Filter.call(this, filterPattern, timeAllowed);
-	this.timeOfActivation = timeOfActivation;
+    this.filterPattern = filterPattern;
+    this.timeAllowed = timeAllowed;
+    this.timeUpPolicy = timeUpPolicy;
+    this.expirationPolicy = expirationPolicy;
 };
