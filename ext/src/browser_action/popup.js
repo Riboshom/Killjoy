@@ -9,13 +9,40 @@ document.addEventListener('DOMContentLoaded', function()
 	
 }, false);
 
+function populateTable(){
+	
+	var alarms = chrome.alarms.getAll(function(alarmArray){
+		
+		alarmArray.forEach(function(alarm){
+			
+			addFilterLine(alarm);
+			
+		});
+		
+	});
+	
+	
+}
 
-function addFilterLine(){
-		var div = document.createElement('div');
+function addFilterLine(alarm){
+		/*var div = document.createElement('div');*/
+		var tableRow = document.createElement('tr');
+		var pattern = alarm.name;
+		
+		chrome.runtime.sendMessage({
+			request: "blacklist"
+		},
+		function(response) {
+		  var blacklist = response.obj;
+		  var filter = blacklist.getFilterByPattern(pattern);
+		var time = Date.now()-alarm.scheduledTime;
+		});
 		
 		div.id = "filter" + filterId;
+
 		
 		
+		/*
 		div.innerHTML = "<form name = 'filter" + filterId + "' onsubmit= 'addFilter()'>" +
 						"<input type = 'url' name = 'pattern' required = 'true' width = '20%'>" +  
 						"<input type = 'time' name = 'timeAllowed' required = 'true' width = '20%'>" +
@@ -29,8 +56,13 @@ function addFilterLine(){
 						"<input type = 'submit' value = 'Ajouter' width = '20%'>" +
 					"</form>" +
 					"<button id = 'removeButton" + filterId + "' type = 'button' class = 'removeButton' width = '20'>X</button>";
+		*/
 		
-		document.getElementById('filterContainer').appendChild(div);
+		row.innerHTML = "<tr> <td>" + pattern + "</td>" + "<td>" + time + "</td> </tr>";
+		
+		document.getElementById('filterTable').appendChild(row);
+		
+		/*document.getElementById('filterContainer').appendChild(div);*/
 		
 		document.getElementById('removeButton' + filterId).addEventListener('click', function(){
 			
