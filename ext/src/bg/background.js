@@ -12,3 +12,26 @@ chrome.extension.onMessage.addListener(
   	chrome.pageAction.show(sender.tab.id);
     sendResponse(settings.toObject());
   });
+
+  chrome.tabs.onActivated.addListener(function(activeInfo) {
+    chrome.tabs.get(activeInfo.tabId, function (tab) {
+        handleTab(tab.url);
+    });
+});
+
+chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, updatedTab) {
+    chrome.tabs.query({'active': true}, function (activeTabs) {
+        var activeTab = activeTabs[0];
+
+        if (activeTab == updatedTab) {
+            handleTab(activeTab.url);
+        }
+    });
+});
+
+
+function handleTab(newUrl) {
+	
+	
+	
+}

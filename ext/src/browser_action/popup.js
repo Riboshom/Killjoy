@@ -47,8 +47,11 @@ function addFilterLine(){
 
 function removeFilterLine(removeId)	 {
 	console.log('Removing filter ' + removeId);
-	divToRemove = document.getElementById('filter'+removeId);
-	divToRemove.parentNode.removeChild(divToRemove);
+	var divToRemove = document.getElementById('filter'+removeId);
+	console.log('Removing content of : ' + divToRemove-1);
+	var parent = divToRemove.parentNode;
+	
+	parent.removeChild(divToRemove);
 	
 }
 
