@@ -14,7 +14,7 @@
     "scripts": [
       "src/class/Filter.js",
       "src/class/ActiveFilter.js",
-      "src/class/Blacklist.js"
+      "src/class/Blacklist.js",
       "src/options_custom/lib",
       "src/bg/background.js"
     ],
