@@ -19,6 +19,7 @@ function addFilterLine(){
 		div.innerHTML = "<form name = 'filter" + filterId + "' onsubmit= 'addFilter()'>" +
 						"<input type = 'url' name = 'pattern' required = 'true' width = '20%'>" +  
 						"<input type = 'time' name = 'timeAllowed' required = 'true' width = '20%'>" +
+						"<input type='hidden' name='lineId' value= '" + filterId + "'>" +
 						"<select name = 'timeUpPolicy' width = '20%'>" +
 						
 							"<option value = 'DENY'>Bloquer l&rsquo;acc&egrave;s</option>" +
@@ -36,15 +37,15 @@ function addFilterLine(){
 			//DOSTUFF TO REMOVE FILTER FROM BLACKLIST
 			removeFilterLine(filterId);
 	
-	console.log("removed line");
-}});
+			console.log("removed line");
+});
 		
 		console.log('Added line');
 		
 		filterId++;
 	}
 
-function removeFilterLine()	 {
+function removeFilterLine(removeId)	 {
 	console.log('Removing filter ' + removeId);
 	divToRemove = document.getElementById('filter'+removeId);
 	divToRemove.parentNode.removeChild(divToRemove);
