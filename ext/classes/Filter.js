@@ -14,19 +14,18 @@ class ActiveFilter {
         this.timeSpent = 0;
     }
 
-    function engage() {
-
+    engage() {
+      var timeLeft = filter.timeAllowed - timeSpent
+      //alarm create(filter.filterPattern, {delayInMinutes: timeLeft})
     }
 
-    function disengage() {
-
+    disengage() {
+      //alarm get(filter.filterPattern)
+      //alarm clear(filter.filterPattern)
+      //timeSpent = (new Date.now() - alarm.scheduledTime)/(60 * 1000)
     }
     
 }
-
-
-// If you remove a filter, it should rebuild the mask by checking the index of the Active Filter's filter
-
 
 class Blacklist {
     constructor (editingParameters, filterList, activeFilters) {
@@ -37,39 +36,46 @@ class Blacklist {
         }
 
         if(typeof activeFilters !== "undefined") {
-            // Not quite sure how it's gonna work from there on
-            // I guess we would have to assume that the filter pointers are still accurate? Hmm...
+            this.activeFilterList = activeFilters;
         } else {
-            activeFilters = [];
+            this.activeFilterList = [];
         }
-        
-        //Something about the parameter edition, I haven't decided about how that'd work.
-
-        //this.filterMask
-        //this.filterList
+        // There was a Proxy here once, but it only served
+        // to make things more complicated on both ends.
     }
 
-    function add(filter) {
-
+    add(filter) {
+      refFilterList.push(filter)
     }
 
-    function remove(filter) {
-
+    remove(soughtFilter) {
+      var refIdx = refFilterList.find(filter => filter === soughtFilter);
+      var activeIdx = activeFilterList.find(activeFilter => activeFilter.filter === soughtFilter);
+      if (refIdx > -1) refFilterList.splice(refIdx, 1);
+      if (activeIdx > -1) activeFilterList.splice(activeIdx, 1);
     }
 
-    function hasMatchesFor(url) {
-
+    hasMatchesFor(url) {
+      return refFilterList.filter(function(filter) {
+        var regexString = filter.filterPattern.replace(/\*/g, '\.\*')
+        regexString = regexString.replace(/[-/\\^$+?.()|[\]{}]/g, '\\$&')
+        var regex = new RegExp(regexString, 'i')
+        return regex.test(url)
+      });
     }
 
-    function activateFilter(filter) {
-
+    activateFilter(filter) {
+      var afListIdx = activeFilterList.find(activeFilter => activeFilter.filter === filter)
+      if (afListIdx > -1) afListIdx = activeFilterList.push(new ActiveFilter(filter)) - 1;
+      activeFilterList[afListIdx].engage();
     }
 
-    function getFilterByPattern(filterPattern) {
-
+    getFilterByPattern(filterPattern) {
+       var filterIdx = refFilterList.find(filter => filter.filterPattern === filterPattern)
+       return refFilterList[filterIdx]
     }
 
-    function disengageActiveFilters() {
-
+    disengageActiveFilters() {
+      for (activeFilter of activeFilterList) activeFilter.disengage()
     }
 }
