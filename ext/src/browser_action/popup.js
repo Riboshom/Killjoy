@@ -17,10 +17,13 @@ if(alarmArray.length < 1 || alarmArray == undefined){
 addNoFilterLine();
 }else{
 var filterTable = document.create element('table');
+					
 var filterTableBody = document.createElement('tbody');
 filterTableBody.id = "filterTableBody";
+
+filterTableBody.innerHTML("<tr><th>Pattern</th> <th>Time</th></tr>");
 filterTable.appendChild(filterTableBody);
-document.body.appendChild(filterTable);
+document.getElementById("filterContainer").appendChild(filterTable);
 alarmArray.forEach(function(alarm){
 			
 			addFilterLine(alarm);
