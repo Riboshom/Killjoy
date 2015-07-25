@@ -3,6 +3,10 @@
   "version": "0.0.1",
   "manifest_version": 2,
   "description": "An excellent way to lock yourself out of those sites you waste all your time on.",
+  "content_scripts": [{
+    "matches": ["http://*/*", "https://*/*"],
+    "js": ["src/browser_action/popup.js"]
+  }],
   "homepage_url": "https://github.com/Riboshom/Killjoy",
   "icons": {
     "16": "icons/icon16.png",
@@ -23,12 +27,15 @@
   "options_page": "src/options_custom/index.html",
   "browser_action": {
     "default_icon": "icons/icon19.png",
-    "default_title": "browser action demo",
+    "default_title": "Killjoy",
     "default_popup": "src/browser_action/browser_action.html"
   },
   "permissions": [
     "tabs",
     "webNavigation",
-	"storage"
+	"storage",
+	"activeTab",
+	"http://*/*", 
+    "https://*/*"
   ]
 }
