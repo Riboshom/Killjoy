@@ -35,16 +35,17 @@ chrome.extension.onMessage.addListener(
   });
 });
 
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, updatedTab) {
-  chrome.tabs.query({'active': true}, function (activeTabs) {
-    var activeTab = activeTabs[0];
-
-    if (activeTab == updatedTab) {
-      handleTab(activeTab.url);
-    }
-  });
+chrome.webNavigation.onCommitted.addListener(function(eventDetails){
+  console.log("Current page has changed.");
+  handleTab(eventDetails.url);
 });
 
+chrome.tabs.onActivated.addListener(function(activeTab) {
+  console.log("Toggeled to another tab.");
+  chrome.tabs.get(activeTab.tabId, function(tabObject){
+    handleTab(tabObject.url);
+  });
+});
 
 function handleTab(newUrl) {
 	console.log("STUB: handleTab(\""+ newUrl +"\")")
