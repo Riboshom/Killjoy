@@ -13,7 +13,15 @@ function populateTable(){
 	
 	var alarms = chrome.alarms.getAll(function(alarmArray){
 		
-		alarmArray.forEach(function(alarm){
+if(alarmArray.length < 1 || alarmArray == undefined){
+addNoFilterLine();
+}else{
+var filterTable = document.create element('table');
+var filterTableBody = document.createElement('tbody');
+filterTableBody.id = "filterTableBody";
+filterTable.appendChild(filterTableBody);
+document.body.appendChild(filterTable);
+alarmArray.forEach(function(alarm){
 			
 			addFilterLine(alarm);
 			
@@ -21,7 +29,7 @@ function populateTable(){
 		
 	});
 	
-	
+}	
 }
 
 function addFilterLine(alarm){
@@ -60,7 +68,7 @@ function addFilterLine(alarm){
 		
 		row.innerHTML = "<tr> <td>" + pattern + "</td>" + "<td>" + time + "</td> </tr>";
 		
-		document.getElementById('filterTable').appendChild(row);
+		document.getElementById('filterTableBody').appendChild(row);
 		
 		/*document.getElementById('filterContainer').appendChild(div);*/
 		
@@ -76,6 +84,13 @@ function addFilterLine(alarm){
 		
 		filterId++;
 	}
+
+fonction addNoFilterLine {
+   var noFilterAlert = document.createElement('p');
+   noFilterAlert.innerHTML("This site does not have any active timers");
+  document.getElementById('popUpBody').appendChild(noFilterAlert);
+
+}
 
 function removeFilterLine(removeId)	 {
 	console.log('Removing filter ' + removeId);
