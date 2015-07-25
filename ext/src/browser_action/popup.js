@@ -91,7 +91,7 @@ function addFilterLine(alarm){
 fonction addNoFilterLine {
    var noFilterAlert = document.createElement('p');
    noFilterAlert.innerHTML("This site does not have any active timers");
-  document.getElementById('popUpBody').appendChild(noFilterAlert);
+  document.getElementById('filterContainer').appendChild(noFilterAlert);
 
 }
 
