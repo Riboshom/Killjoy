@@ -33,9 +33,9 @@
   "permissions": [
     "tabs",
     "webNavigation",
-	"storage",
-	"activeTab",
-	"http://*/*", 
+    "storage",
+    "activeTab",
+    "http://*/*", 
     "https://*/*"
   ]
 }
