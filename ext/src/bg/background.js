@@ -20,7 +20,9 @@ var refreshBlacklist = function () {
   }).bind(this));
 }
 
+chrome.storage.local.remove('blacklist', function() {
 refreshBlacklist();
+});
 
 //example of using a message handler from the inject scripts
 chrome.extension.onMessage.addListener(

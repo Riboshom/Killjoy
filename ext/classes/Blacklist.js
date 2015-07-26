@@ -1,18 +1,9 @@
 class Blacklist {
-    constructor (editingParameters, filterList, activeFilters) {
-        if(typeof filterList !== "undefined") {
-            this.refFilterList = filterList;
-        } else {
-            this.refFilterList = [];
-        }
-
-        if(typeof activeFilters !== "undefined") {
-            this.activeFilterList = activeFilters;
-        } else {
-            this.activeFilterList = [];
-        }
-        // There was a Proxy here once, but it only served
-        // to make things more complicated on both ends.
+    constructor (editingParameters, filterList = [], activeFilters = []) {
+      this.refFilterList = filterList;
+      this.activeFilterList = activeFilters;
+      // There was a Proxy here once, but it only served
+      // to make things more complicated on both ends.
     }
 
     add(filter) {
@@ -42,8 +33,8 @@ class Blacklist {
     }
 
     getFilterByPattern(filterPattern) {
-       var filterIdx = refFilterList.find(filter => filter.filterPattern === filterPattern)
-       return refFilterList[filterIdx]
+      var filterIdx = refFilterList.find(filter => filter.filterPattern === filterPattern)
+      return refFilterList[filterIdx]
     }
 
     disengageActiveFilters() {
