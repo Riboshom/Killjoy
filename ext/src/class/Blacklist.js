@@ -25,10 +25,10 @@ var Blacklist = (function () {
   }, {
     key: "remove",
     value: function remove(soughtFilter) {
-      var refIdx = this.refFilterList.find(function (filter) {
+      var refIdx = this.refFilterList.findIndex(function (filter) {
         return filter === soughtFilter;
       });
-      var activeIdx = this.activeFilterList.find(function (activeFilter) {
+      var activeIdx = this.activeFilterList.findIndex(function (activeFilter) {
         return activeFilter.filter === soughtFilter;
       });
       if (refIdx > -1) this.refFilterList.splice(refIdx, 1);
@@ -44,16 +44,17 @@ var Blacklist = (function () {
   }, {
     key: "activateFilter",
     value: function activateFilter(filter) {
-      var afListIdx = this.activeFilterList.find(function (activeFilter) {
+      var afListIdx = this.activeFilterList.findIndex(function (activeFilter) {
         return activeFilter.filter === filter;
       });
-      if (afListIdx > -1) afListIdx = this.activeFilterList.push(new ActiveFilter(filter)) - 1;
+      //Append the filter if it isn't there and update the target index to match
+      if (afListIdx == -1) afListIdx = this.activeFilterList.push(new ActiveFilter(filter)) - 1;
       this.activeFilterList[afListIdx].engage();
     }
   }, {
     key: "getFilterByPattern",
     value: function getFilterByPattern(filterPattern) {
-      var filterIdx = this.refFilterList.find(function (filter) {
+      var filterIdx = this.refFilterList.findIndex(function (filter) {
         return filter.filterPattern === filterPattern;
       });
       return refFilterList[filterIdx];

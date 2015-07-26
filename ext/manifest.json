@@ -16,6 +16,7 @@
   "default_locale": "en",
   "background": {    
     "scripts": [
+      "lib/browser-polyfill.min.js",
       "src/class/Filter.js",
       "src/class/ActiveFilter.js",
       "src/class/Blacklist.js",

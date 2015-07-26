@@ -11,8 +11,8 @@ class Blacklist {
     }
 
     remove(soughtFilter) {
-      var refIdx = this.refFilterList.find(filter => filter === soughtFilter);
-      var activeIdx = this.activeFilterList.find(activeFilter => activeFilter.filter === soughtFilter);
+      var refIdx = this.refFilterList.findIndex(filter => filter === soughtFilter);
+      var activeIdx = this.activeFilterList.findIndex(activeFilter => activeFilter.filter === soughtFilter);
       if (refIdx > -1) this.refFilterList.splice(refIdx, 1);
       if (activeIdx > -1) this.activeFilterList.splice(activeIdx, 1);
     }
@@ -24,13 +24,14 @@ class Blacklist {
     }
 
     activateFilter(filter) {
-      var afListIdx = this.activeFilterList.find(activeFilter => activeFilter.filter === filter)
-      if (afListIdx > -1) afListIdx = this.activeFilterList.push(new ActiveFilter(filter)) - 1;
+      var afListIdx = this.activeFilterList.findIndex(activeFilter => activeFilter.filter === filter)
+      //Append the filter if it isn't there and update the target index to match
+      if (afListIdx == -1) afListIdx = this.activeFilterList.push(new ActiveFilter(filter)) - 1;
       this.activeFilterList[afListIdx].engage();
     }
 
     getFilterByPattern(filterPattern) {
-      var filterIdx = this.refFilterList.find(filter => filter.filterPattern === filterPattern)
+      var filterIdx = this.refFilterList.findIndex(filter => filter.filterPattern === filterPattern)
       return refFilterList[filterIdx]
     }
 

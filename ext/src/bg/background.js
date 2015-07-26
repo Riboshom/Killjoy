@@ -6,7 +6,7 @@
 //   "sample_setting": "This is how you use Store.js to remember values"
 //  });
 
-var defaultFilters = [new Filter("*.github.com/*", 360, function(){return true}, function(){return true})];
+var defaultFilters = [new Filter("*github.com*", 360, function(){return true}, function(){return true})];
 //var defaultFilters = [];
 
 var refreshBlacklist = function () {
@@ -24,9 +24,9 @@ var refreshBlacklist = function () {
   }).bind(this));
 }
 
-//chrome.storage.local.remove('blacklist', function() {
+chrome.storage.local.remove('blacklist', function() {
 refreshBlacklist();
-//});
+});
 
 //example of using a message handler from the inject scripts
 chrome.extension.onMessage.addListener(
@@ -53,12 +53,12 @@ chrome.tabs.onActivated.addListener(function(activeTab) {
 });
 
 function handleTab(newUrl) {
-//  console.log("STUB: handleTab(\""+ newUrl +"\")");
-  console.log(JSON.stringify(this.blacklist))
+//console.log(JSON.stringify(this.blacklist))
+  this.blacklist.disengageActiveFilters();
   var matchingFilters = this.blacklist.hasMatchesFor(newUrl);
   if (matchingFilters.length == 0) console.log("No matches in the Blacklist");
 
   matchingFilters.forEach(function(filter){
-    console.log("Match with " + filter.filterPattern);
+    this.blacklist.activateFilter(filter);
   });
 }

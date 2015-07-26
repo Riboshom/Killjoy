@@ -6,13 +6,13 @@ class ActiveFilter {
     }
 
     engage() {
-      var timeLeft = filter.timeAllowed - timeSpent
-      chrome.alarms.create(filter.filterPattern, {delayInMinutes: timeLeft})
+      var timeLeft = this.filter.timeAllowed - this.timeSpent
+      chrome.alarms.create(this.filter.filterPattern, {delayInMinutes: this.timeLeft})
     }
 
     disengage() {
-      chrome.alarms.get(filter.filterPattern)
-      chrome.alarms.clear(filter.filterPattern)
+      chrome.alarms.get(this.filter.filterPattern)
+      chrome.alarms.clear(this.filter.filterPattern)
       timeSpent = (new Date.now() - alarm.scheduledTime)/(60 * 1000)
     }
     
