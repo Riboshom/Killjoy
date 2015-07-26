@@ -61,29 +61,19 @@ var Blacklist = (function () {
   }, {
     key: "disengageActiveFilters",
     value: function disengageActiveFilters() {
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
-
-      try {
-        for (var _iterator = this.activeFilterList[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          activeFilter = _step.value;
-          activeFilter.disengage();
-        }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator["return"]) {
-            _iterator["return"]();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
-      }
+      this.activeFilterList.forEach(function (activeFilter) {
+        activeFilter.disengage();
+      });
+    }
+  }, {
+    key: "restorePrototypes",
+    value: function restorePrototypes() {
+      this.activeFilterList.forEach(function (activeFilter) {
+        activeFilter.__proto__ = ActiveFilter.prototype;
+      });
+      this.refFilterList.forEach(function (filter) {
+        filter.__proto__ = Filter.prototype;
+      });
     }
   }]);
 

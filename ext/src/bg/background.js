@@ -18,6 +18,7 @@ var refreshBlacklist = function () {
     } else {
       this.blacklist = item.blacklist;
       this.blacklist.__proto__ = Blacklist.prototype;
+      this.blacklist.restorePrototypes();
       console.log('Blacklist loaded');
     }
   }).bind(this));

@@ -35,6 +35,11 @@ class Blacklist {
     }
 
     disengageActiveFilters() {
-      for (activeFilter of this.activeFilterList) activeFilter.disengage()
+      this.activeFilterList.forEach(function (activeFilter){ activeFilter.disengage() })
+    }
+
+    restorePrototypes() {
+      this.activeFilterList.forEach(function (activeFilter){ activeFilter.__proto__ = ActiveFilter.prototype })
+      this.refFilterList.forEach(function (filter){ filter.__proto__ = Filter.prototype })
     }
 }
