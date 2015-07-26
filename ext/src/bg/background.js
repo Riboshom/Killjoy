@@ -17,15 +17,15 @@ var refreshBlacklist = function () {
       console.log('Blacklist created');
     } else {
       this.blacklist = item.blacklist;
+      this.blacklist.__proto__ = Blacklist.prototype;
       console.log('Blacklist loaded');
     }
-    console.log("Blacklist : " + JSON.stringify(this.blacklist))
   }).bind(this));
 }
 
-chrome.storage.local.remove('blacklist', function() {
+//chrome.storage.local.remove('blacklist', function() {
 refreshBlacklist();
-});
+//});
 
 //example of using a message handler from the inject scripts
 chrome.extension.onMessage.addListener(
@@ -52,7 +52,7 @@ chrome.tabs.onActivated.addListener(function(activeTab) {
 });
 
 function handleTab(newUrl) {
-  console.log("STUB: handleTab(\""+ newUrl +"\")");
+//  console.log("STUB: handleTab(\""+ newUrl +"\")");
   console.log(JSON.stringify(this.blacklist))
   var matchingFilters = this.blacklist.hasMatchesFor(newUrl);
   if (matchingFilters.length == 0) console.log("No matches in the Blacklist");
