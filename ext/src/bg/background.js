@@ -6,10 +6,13 @@
 //   "sample_setting": "This is how you use Store.js to remember values"
 //  });
 
+var defaultFilters = [new Filter("*.github.com/*", 360, function(){return true}, function(){return true})];
+//var defaultFilters = [];
+
 var refreshBlacklist = function () {
   chrome.storage.local.get('blacklist', (function(item){
     if(item.blacklist === undefined || Object.keys(item.blacklist).length === 0){
-      this.blacklist = new Blacklist()
+      this.blacklist = new Blacklist(defaultFilters)
       chrome.storage.local.set({'blacklist': this.blacklist});
       console.log('Blacklist created');
     } else {
@@ -50,6 +53,7 @@ chrome.tabs.onActivated.addListener(function(activeTab) {
 
 function handleTab(newUrl) {
   console.log("STUB: handleTab(\""+ newUrl +"\")");
+  console.log(JSON.stringify(this.blacklist))
   var matchingFilters = this.blacklist.hasMatchesFor(newUrl);
   if (matchingFilters.length == 0) console.log("No matches in the Blacklist");
 
