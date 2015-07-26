@@ -6,19 +6,18 @@
 //   "sample_setting": "This is how you use Store.js to remember values"
 //  });
 
-var blacklist;
-
 var refreshBlacklist = function () {
-  chrome.storage.local.get('blacklist', function(item){
-    if(item === undefined){
+  chrome.storage.local.get('blacklist', (function(item){
+    if(item.blacklist === undefined || Object.keys(item.blacklist).length === 0){
       this.blacklist = new Blacklist()
       chrome.storage.local.set({'blacklist': this.blacklist});
       console.log('Blacklist created');
     } else {
-      this.blacklist = item;
+      this.blacklist = item.blacklist;
+      console.log('Blacklist loaded');
     }
-    console.log(this.blacklist)
-  });
+    console.log("Blacklist : " + JSON.stringify(this.blacklist))
+  }).bind(this));
 }
 
 refreshBlacklist();
@@ -48,5 +47,11 @@ chrome.tabs.onActivated.addListener(function(activeTab) {
 });
 
 function handleTab(newUrl) {
-	console.log("STUB: handleTab(\""+ newUrl +"\")")
+  console.log("STUB: handleTab(\""+ newUrl +"\")");
+  var matchingFilters = this.blacklist.hasMatchesFor(newUrl);
+  if (matchingFilters.length == 0) console.log("No matches in the Blacklist");
+
+  matchingFilters.forEach(function(filter){
+    console.log("Match with " + filter.filterPattern);
+  });
 }
