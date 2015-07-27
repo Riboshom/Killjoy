@@ -6,7 +6,6 @@ class ActiveFilter {
     }
 
     engage() {
-      console.log("AF : " + JSON.stringify(this))
       if(this.filter.timeAllowedPolicy.timeLeftAfter(this.timeSpent) > 0) {
         return this.filter.timeAllowedPolicy.declareAlarm(this.filter.filterPattern, this.timeSpent)
       } else {

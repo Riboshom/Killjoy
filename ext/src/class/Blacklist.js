@@ -47,9 +47,23 @@ var Blacklist = (function () {
       var afListIdx = this.activeFilterList.findIndex(function (activeFilter) {
         return activeFilter.filter === filter;
       });
-      //Append the filter if it isn't there and update the target index to match
-      if (afListIdx == -1) afListIdx = this.activeFilterList.push(new ActiveFilter(filter)) - 1;
+      if (afListIdx == -1) {
+        //Append the filter if it isn't there and update the target index to match
+        afListIdx = this.activeFilterList.push(new ActiveFilter(filter)) - 1;
+        filter.expirationPolicy.declareAlarm("¤" + filter.filterPattern);
+      }
       return this.activeFilterList[afListIdx].engage();
+    }
+  }, {
+    key: "deactivateFilter",
+    value: function deactivateFilter(filter) {
+      var activeIdx = this.activeFilterList.findIndex(function (activeFilter) {
+        return activeFilter.filter === soughtFilter;
+      });
+      var activeFilter = this.activeFilterList[activeIdx];
+      activeFilter.disengage().then(function () {
+        this.activeFilterList.splice(activeIdx, 1);
+      });
     }
   }, {
     key: "getFilterByPattern",
@@ -57,12 +71,11 @@ var Blacklist = (function () {
       var filterIdx = this.refFilterList.findIndex(function (filter) {
         return filter.filterPattern === filterPattern;
       });
-      return refFilterList[filterIdx];
+      return this.refFilterList[filterIdx];
     }
   }, {
     key: "disengageActiveFilters",
     value: function disengageActiveFilters() {
-      console.log(JSON.stringify(this.activeFilterList));
       var promises = [];
       this.activeFilterList.forEach(function (activeFilter) {
         promises.push(activeFilter.disengage());

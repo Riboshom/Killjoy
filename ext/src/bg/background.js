@@ -7,17 +7,17 @@
 //  });
 
 /* TODO :
-    Injecting content scripts
-    Reacting to alarms
     Expiration alarms
     What to do on browser close or sleep
 */
 
+var expirationPrefix = "¤"
+
 var defaultFilters = [
   new Filter("*github.com*",
-    new TimePolicy("AFTER", 0),
+    new TimePolicy("AFTER", 1),
     BlockingAction.library.popUp,
-    new TimePolicy("AFTER", 600)),
+    new TimePolicy("AFTER", 1.5)),
 ];
 
 //var defaultFilters = [];
@@ -70,9 +70,9 @@ chrome.tabs.onActivated.addListener(function(activeTab) {
 */
 
 chrome.alarms.onAlarm.addListener(function(alarm){
-  var isExpirationTimer = false;
-  if(isExpirationTimer) {
-    //Placeholder for expiration alarms
+  if(alarm.name.indexOf(expirationPrefix) === 0) {
+    var filter = blacklist.getFilterByPattern(alarm.name.substring(expirationPrefix.length))
+    blacklist.deactivate(filter)
   } else {
     alarmCallback(alarm)
   }
