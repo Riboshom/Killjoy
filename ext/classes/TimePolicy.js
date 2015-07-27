@@ -1,7 +1,7 @@
 class TimePolicy {
   constructor (type, minTime){ 
     if (type === "AT") {
-      this.mark = new Date(msTime)
+      this.mark = new Date(minTime * 60000)
     } else if (type === "AFTER") {
       this.delay = minTime * 60000 //In ms
     } else {
