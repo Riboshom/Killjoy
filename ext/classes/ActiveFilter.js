@@ -2,18 +2,20 @@ class ActiveFilter {
     constructor (filter) {
         this.filter = filter;
         this.timeOfActivation = new Date();
-        this.timeSpent = 0;
+        this.timeSpent = 0; //In milliseconds
     }
 
     engage() {
-      var timeLeft = filter.timeAllowed - timeSpent
-      //alarm create(filter.filterPattern, {delayInMinutes: timeLeft})
+      console.log("AF : " + JSON.stringify(this))
+      return this.filter.timeAllowedPolicy.declareAlarm(this.filter.filterPattern, this.timeSpent)
     }
 
     disengage() {
-      //alarm get(filter.filterPattern)
-      //alarm clear(filter.filterPattern)
-      //timeSpent = (new Date.now() - alarm.scheduledTime)/(60 * 1000)
+      var policy = this.filter.timeAllowedPolicy
+      return policy.withdrawAlarm(this.filter.filterPattern).then((function(timeLeft){
+        //Undefined would mean that there's no such alarm
+        if (timeLeft !== undefined) this.timeSpent = policy.timeSpentIfRemains(timeLeft);
+      }).bind(this))
     }
     
 }

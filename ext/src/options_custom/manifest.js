@@ -155,9 +155,9 @@ function init(){
     settings.push(timeout);
   }
 }
+
 this.manifest = {
     "name": "Killjoy",
     "icon": "icon.png",
-    "settings": settings
-   
+    "settings": this.settings
 };

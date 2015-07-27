@@ -16,6 +16,8 @@
   "default_locale": "en",
   "background": {    
     "scripts": [
+      "lib/browser-polyfill.min.js",
+      "src/class/TimePolicy.js",
       "src/class/Filter.js",
       "src/class/ActiveFilter.js",
       "src/class/Blacklist.js",
@@ -35,9 +37,10 @@
   "permissions": [
     "tabs",
     "webNavigation",
-	"storage",
-	"activeTab",
-	"http://*/*", 
+    "storage",
+    "alarms",
+    "activeTab",
+    "http://*/*", 
     "https://*/*"
   ]
 }
