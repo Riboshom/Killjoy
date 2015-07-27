@@ -16,8 +16,14 @@ var ActiveFilter = (function () {
   _createClass(ActiveFilter, [{
     key: "engage",
     value: function engage() {
-      console.log("AF : " + JSON.stringify(this));
-      return this.filter.timeAllowedPolicy.declareAlarm(this.filter.filterPattern, this.timeSpent);
+      if (this.filter.timeAllowedPolicy.timeLeftAfter(this.timeSpent) > 0) {
+        return this.filter.timeAllowedPolicy.declareAlarm(this.filter.filterPattern, this.timeSpent);
+      } else {
+        //Manually fire the timeup policy
+        //TODO : Merge logic for this and background script alarmCallback()
+        this.filter.timeUpPolicy.run();
+        return Promise.resolve(0);
+      }
     }
   }, {
     key: "disengage",

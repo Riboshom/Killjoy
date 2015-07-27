@@ -6,12 +6,20 @@
 //   "sample_setting": "This is how you use Store.js to remember values"
 //  });
 
+/* TODO :
+    Expiration alarms
+    What to do on browser close or sleep
+*/
+
+var expirationPrefix = "¤"
+
 var defaultFilters = [
   new Filter("*github.com*",
-    new TimePolicy("AFTER", 60),
-    function(){return true},
-    function(){return true})
+    new TimePolicy("AFTER", 1),
+    BlockingAction.library.popUp,
+    new TimePolicy("AFTER", 1.5)),
 ];
+
 //var defaultFilters = [];
 
 var refreshBlacklist = function () {
@@ -27,7 +35,7 @@ var refreshBlacklist = function () {
         this.blacklist.__proto__ = Blacklist.prototype;
         this.blacklist.restorePrototypes();
         console.log('Blacklist loaded');
-        resolve()
+        resolve(blacklist)
       }
     }).bind(this));
   }.bind(this));
@@ -53,14 +61,32 @@ chrome.webNavigation.onCommitted.addListener(function(eventDetails){
   handleTab(eventDetails.url);
 });
 
+/*
 chrome.tabs.onActivated.addListener(function(activeTab) {
   chrome.tabs.get(activeTab.tabId, function(tabObject){
     handleTab(tabObject.url);
   });
 });
+*/
+
+chrome.alarms.onAlarm.addListener(function(alarm){
+  if(alarm.name.indexOf(expirationPrefix) === 0) {
+    var filter = blacklist.getFilterByPattern(alarm.name.substring(expirationPrefix.length))
+    blacklist.deactivate(filter)
+  } else {
+    alarmCallback(alarm)
+  }
+})
+
+function alarmCallback(alarm) {
+  refreshBlacklist().then(function(blacklist){
+    var filter = blacklist.getFilterByPattern(alarm.name)
+    filter.timeUpPolicy.run()
+  }.bind())
+}
 
 function handleTab(newUrl) {
-  this.blacklist.disengageActiveFilters().then(function() {
+  blacklist.disengageActiveFilters().then(function() {
     var matchingFilters = this.blacklist.hasMatchesFor(newUrl);
     if (matchingFilters.length == 0) console.log("\""+ newUrl +"\": No matches in the Blacklist");
 

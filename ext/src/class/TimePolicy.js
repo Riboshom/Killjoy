@@ -8,6 +8,7 @@ var TimePolicy = (function () {
   function TimePolicy(type, minTime) {
     _classCallCheck(this, TimePolicy);
 
+    //TODO : Refactor this ugly hack into subclasses
     if (type === "AT") {
       this.mark = new Date(minTime * 60000);
     } else if (type === "AFTER") {
@@ -29,7 +30,7 @@ var TimePolicy = (function () {
         var minutesLeft = this.minutesLeftAfter(timeOffset);
         chrome.alarms.create(name, { delayInMinutes: minutesLeft });
         console.log("Alarm online : " + minutesLeft + " minutes left.");
-        resolve();
+        resolve(minutesLeft);
       }).bind(this));
     }
   }, {

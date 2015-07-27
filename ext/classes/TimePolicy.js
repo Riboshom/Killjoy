@@ -1,5 +1,6 @@
 class TimePolicy {
   constructor (type, minTime){ 
+    //TODO : Refactor this ugly hack into subclasses
     if (type === "AT") {
       this.mark = new Date(minTime * 60000)
     } else if (type === "AFTER") {
@@ -16,7 +17,7 @@ class TimePolicy {
       var minutesLeft = this.minutesLeftAfter(timeOffset)
       chrome.alarms.create(name, { delayInMinutes: minutesLeft })
       console.log("Alarm online : " + minutesLeft + " minutes left.")
-      resolve()
+      resolve(minutesLeft)
     }.bind(this));
   }
   
