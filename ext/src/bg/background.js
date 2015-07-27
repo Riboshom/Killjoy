@@ -6,7 +6,12 @@
 //   "sample_setting": "This is how you use Store.js to remember values"
 //  });
 
-var defaultFilters = [new Filter("*github.com*", 360, function(){return true}, function(){return true})];
+var defaultFilters = [
+  new Filter("*github.com*",
+    new TimePolicy("AFTER", 60),
+    function(){return true},
+    function(){return true})
+];
 //var defaultFilters = [];
 
 var refreshBlacklist = function () {
@@ -41,24 +46,22 @@ chrome.extension.onMessage.addListener(
 });
 
 chrome.webNavigation.onCommitted.addListener(function(eventDetails){
-  console.log("Current page has changed.");
   handleTab(eventDetails.url);
 });
 
 chrome.tabs.onActivated.addListener(function(activeTab) {
-  console.log("Toggeled to another tab.");
   chrome.tabs.get(activeTab.tabId, function(tabObject){
     handleTab(tabObject.url);
   });
 });
 
 function handleTab(newUrl) {
-//console.log(JSON.stringify(this.blacklist))
-  this.blacklist.disengageActiveFilters();
-  var matchingFilters = this.blacklist.hasMatchesFor(newUrl);
-  if (matchingFilters.length == 0) console.log("No matches in the Blacklist");
+  this.blacklist.disengageActiveFilters().then(function() {
+    var matchingFilters = this.blacklist.hasMatchesFor(newUrl);
+    if (matchingFilters.length == 0) console.log("\""+ newUrl +"\": No matches in the Blacklist");
 
-  matchingFilters.forEach(function(filter){
-    this.blacklist.activateFilter(filter);
-  });
+    matchingFilters.forEach(function(filter){
+      this.blacklist.activateFilter(filter)
+    });
+  })
 }

@@ -27,7 +27,7 @@ class Blacklist {
       var afListIdx = this.activeFilterList.findIndex(activeFilter => activeFilter.filter === filter)
       //Append the filter if it isn't there and update the target index to match
       if (afListIdx == -1) afListIdx = this.activeFilterList.push(new ActiveFilter(filter)) - 1;
-      this.activeFilterList[afListIdx].engage();
+      return this.activeFilterList[afListIdx].engage();
     }
 
     getFilterByPattern(filterPattern) {
@@ -36,11 +36,18 @@ class Blacklist {
     }
 
     disengageActiveFilters() {
-      this.activeFilterList.forEach(function (activeFilter){ activeFilter.disengage() })
+      console.log(JSON.stringify(this.activeFilterList))
+      var promises = []
+      this.activeFilterList.forEach(function (activeFilter){ promises.push(activeFilter.disengage()) })
+      return Promise.all(promises)
     }
 
     restorePrototypes() {
       this.activeFilterList.forEach(function (activeFilter){ activeFilter.__proto__ = ActiveFilter.prototype })
-      this.refFilterList.forEach(function (filter){ filter.__proto__ = Filter.prototype })
+      this.refFilterList.forEach(function (filter){
+        filter.__proto__ = Filter.prototype
+        filter.timeAllowedPolicy.__proto__ = TimePolicy.prototype
+        filter.expirationPolicy.__proto__ = TimePolicy.prototype
+      })
     }
 }

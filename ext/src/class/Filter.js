@@ -5,11 +5,11 @@ var _createClass = (function () { function defineProperties(target, props) { for
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 var Filter = (function () {
-  function Filter(filterPattern, timeAllowed, timeUpPolicy, expirationPolicy) {
+  function Filter(filterPattern, timeAllowedPolicy, timeUpPolicy, expirationPolicy) {
     _classCallCheck(this, Filter);
 
     this.filterPattern = filterPattern;
-    this.timeAllowed = timeAllowed;
+    this.timeAllowedPolicy = timeAllowedPolicy;
     this.timeUpPolicy = timeUpPolicy;
     this.expirationPolicy = expirationPolicy;
   }
@@ -22,9 +22,6 @@ var Filter = (function () {
       var regexString = this.filterPattern.replace(/[-/\\^$+?.()|[\]{}]/g, '\\$&');
       regexString = regexString.replace(/\*/g, '.*');
       var regex = new RegExp(regexString, 'i');
-      console.log('Regex : ' + regex.source);
-      console.log('String : ' + url);
-      console.log('Passes? : ' + regex.test(url));
       return regex.test(url);
     }
   }]);

@@ -17,6 +17,7 @@
   "background": {    
     "scripts": [
       "lib/browser-polyfill.min.js",
+      "src/class/TimePolicy.js",
       "src/class/Filter.js",
       "src/class/ActiveFilter.js",
       "src/class/Blacklist.js",

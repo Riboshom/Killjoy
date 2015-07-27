@@ -49,7 +49,7 @@ var Blacklist = (function () {
       });
       //Append the filter if it isn't there and update the target index to match
       if (afListIdx == -1) afListIdx = this.activeFilterList.push(new ActiveFilter(filter)) - 1;
-      this.activeFilterList[afListIdx].engage();
+      return this.activeFilterList[afListIdx].engage();
     }
   }, {
     key: "getFilterByPattern",
@@ -62,9 +62,12 @@ var Blacklist = (function () {
   }, {
     key: "disengageActiveFilters",
     value: function disengageActiveFilters() {
+      console.log(JSON.stringify(this.activeFilterList));
+      var promises = [];
       this.activeFilterList.forEach(function (activeFilter) {
-        activeFilter.disengage();
+        promises.push(activeFilter.disengage());
       });
+      return Promise.all(promises);
     }
   }, {
     key: "restorePrototypes",
@@ -74,6 +77,8 @@ var Blacklist = (function () {
       });
       this.refFilterList.forEach(function (filter) {
         filter.__proto__ = Filter.prototype;
+        filter.timeAllowedPolicy.__proto__ = TimePolicy.prototype;
+        filter.expirationPolicy.__proto__ = TimePolicy.prototype;
       });
     }
   }]);
