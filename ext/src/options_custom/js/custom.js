@@ -9,6 +9,8 @@ var policyTimeHours;
 
 var blacklist;
 
+var defaultExpirationPolicy = new TimePolicy("AT", new Date(2015,01,01,0,0,0));
+
 
 $(document).ready(function(){
 	
@@ -16,7 +18,7 @@ $(document).ready(function(){
 	populateContainer();
 	$("#addFilterButton").on('click', function(){
 		
-		addFilterLine("true", emptyArray, true )
+		addFilterLine("true", emptyArray, true );
 	
 	
 	});
@@ -29,28 +31,30 @@ function populateContainer(){
 	
 	refreshBlackList().then(function(){
 		var argsArray = [];
-		filterList = blacklist.refFilterList;
-		for (var index = 0; index < filterList.length; ++index) {
-			if(filterList[index].timeAllowedPolicy.hasOwnProperty("delay")){
+		
+		
+		
+		blacklist.refFilterList.forEach(function(item) {
+			if(item.timeAllowedPolicy.hasOwnProperty("delay")){
 				policyType = "AFTER";
-				policyTime = (filterList[index].timeAllowedPolicy.delay);
+				policyTime = (item.timeAllowedPolicy.delay);
 			}else{
 					
 				policyType = "AT";
-				policyTime = (filterList[index].timeAllowedPolicy.mark).getTime();
+				policyTime = (item.timeAllowedPolicy.mark).getTime();
 					
 			}
 			policyTimeMin = ~~(policyTime/60000);
 
 			policyTimeHours = (Math.floor(policyTimeMin / 60) ) % 24;
 
-			argsArray[0]= filterList[index].filterPattern.replace("/", "//");
+			argsArray[0]= item.filterPattern.replace("/", "//");
 			argsArray[1]= pad(policyTimeHours.toString()) + ":" + pad(policyTimeMin % 60).toString() ;
 			argsArray[2]= policyType;
 
 			addFilterLine("true", argsArray, false);
 
-		}
+		});
 	
 	});
 
@@ -89,16 +93,16 @@ function addFilterLine(disabled, args, append){
 		
 		if(newFilter){
 		div.innerHTML = "<form id = 'filter" + filterId + "' action = '#'>" +
-						"<div class = 'inputDiv'><input type = 'url' name = 'pattern' required = 'true' width = '20%' disabled = '" + disabled + "'></div>" +  
-						"<div class = 'inputDiv'><input type = 'time' name = 'timeAllowed' required = 'true' width = '20%' disabled = '" + disabled + "'></div>" +
-						"<input type='hidden' name='lineId' value= '" + filterId + "'>" +
-						"<div class = 'inputDiv'><select name = 'timeUpPolicy' width = '20%' disabled = '" + disabled + "'>" +
+						"<div class = 'inputDiv'><input type = 'url' name = 'pattern' required = 'true' width = '20%' ></div>" +  
+						"<div class = 'inputDiv'><input type = 'time' name = 'timeAllowed' required = 'true' width = '20%' ></div>" +
+						"<input type='hidden' name='formId' value= '" + filterId + "'>" +
+						"<div class = 'inputDiv'><select name = 'timeUpPolicy' width = '20%' >" +
 						
 							"<option value = 'AT'>Partir au temps indiqu&eacute;</option>" +
 "<option value = 'AFTER' selected>Bloquer apr&egrave;s le temps indiqu&eacute;</option>" +
 						
 						"</select></div>" +
-						"<div class = 'inputDiv'><input type = 'submit' value = 'Ajouter' width = '20%' disabled = '" + disabled + "'></div>" +
+						"<div class = 'inputDiv'><input type = 'submit' value = 'Nouveau' width = '20%' ></div>" +
 					"</form>" +
 					"<div class = 'inputDiv'><button id = 'removeButton" + filterId.toString() + "' type = 'button' class = 'removeButton' width = '20' onclick = 'removeFilterLine("+ filterId +")'>X</button></div><br>";
 		
@@ -107,16 +111,16 @@ function addFilterLine(disabled, args, append){
 			div.innerHTML = "<form id = 'filter" + filterId + "' action = '#'>" +
 						"<div class = 'inputDiv'><input type = 'url' name = 'pattern' value = '" + args[0] + "' required = 'true' width = '20%' disabled = '" + disabled + "'></div>" +  
 						"<div class = 'inputDiv'><input type = 'time' name = 'timeAllowed' value = '" + args[1] + "'required = 'true' width = '20%' disabled = '" + disabled + "'></div>" +
-						"<input type='hidden' name='patternAsId' value= '" + args[0] + "'>" +
+						"<input type='hidden' name='formId' value= '" + filterId + "'>" +
 						"<div class = 'inputDiv'><select name = 'timeUpPolicy' value = '" + args[2] + "' width = '20%' disabled = '" + disabled + "'>" +
 						
 							"<option value = 'AT'>Partir au temps indiqu&eacute;</option>" +
 "<option value = 'AFTER' selected>Bloquer apr&egrave;s le temps indiqu&eacute;</option>" +
 						
 						"</select></div>" +
-						"<div class = 'inputDiv'><input type = 'submit' value = 'Ajouter' width = '20%' disabled = '" + disabled + "'></div>" +
+						"<div class = 'inputDiv'><input type = 'submit' value = 'Nouveau' width = '20%' disabled = '" + disabled + "'></div>" +
 					"</form>" +
-					"<div class = 'inputDiv'><button id = 'removeButton" + filterId.toString() + "' type = 'button' class = 'removeButton' width = '20' onclick = 'removeFilter("+ args[0] +")'>X</button></div><br>";
+					"<div class = 'inputDiv'><button id = 'removeButton" + filterId.toString() + "' type = 'button' class = 'removeButton' width = '20' >X</button></div><br>";
 			
 			
 		}
@@ -125,16 +129,24 @@ function addFilterLine(disabled, args, append){
 		}else{
 			$('#filterContainer').prepend(div);
 		}
-		$('#filter' + filterId).submit(function () {
-				console.log('Adding filter ' + filterId);
-			addFilter($(this).attr("id"));
+		var filterToAdd = 'filter' + filterId.toString();
+		$('#filter' + filterId).submit(function() {
+				console.log("This in submit = " + JSON.stringify(this));
+				var idValue = $(this).find('input[name="formId"]').val();
+				console.log('Adding filter ' + idValue);
+			addFilter("filter"+idValue);
 		 return false;
 		});
 		
 		/*document.getElementById('filterContainer').appendChild(div);*/
+		var filterIdToRemove = args[0];
+		/*$('#filter' + filterId + " #removeButton").on("click", function(filterIdToRemove){
+			
+			removeFilter(filterIdToRemove);
+			
+		});
 		
-		
-		console.log('Added line');
+		console.log('Added line');*/
 		
 		filterId++;
 	}
@@ -157,11 +169,12 @@ function addFilter(filterFormName){
 	var newPattern;
 	var timeArray;
 	var timeMin;
+	var filterToAdd;
 	//only adds. does not edit.
 	
 	var inputs = $("#"+filterFormName).serializeArray();
 	
-	console.log("Content of " + filterFormName + " : " + inputs);
+	console.log("Content of " + filterFormName + " : " + JSON.stringify(inputs));
 	
 	jQuery.each( inputs, function( i, field ) {
       switch (field.name){
@@ -197,28 +210,21 @@ function addFilter(filterFormName){
 	
 	timeArray = time.split(":");
 	timeMin = parseInt(timeArray[0])*60 + parseInt(timeArray[1]);
-	var filterToAdd = new Filter(newPattern,  new TimePolicy(policy, timeMin), function(){
-			
-			//dostuff at timeUpPolicy
-			
-		
-		return true
-		}, function(){
-			
-			//dostuff at expirationpolicy
-			
-			return true
-		});
+	filterToAdd = new Filter(newPattern + "*",  new TimePolicy(policy, timeMin), {}, defaultExpirationPolicy);
 	
 	
-	console.log("adding filter : " + "" + newPattern.toString() + ", " + policy + timeMin + ", " + policy.toString());
+	console.log("adding filter in addFilter : " + JSON.stringify(filterToAdd));
 	//document.getElementById(
 	
-	refreshBlackList();
+	refreshBlackList().then(function(filterToAdd){
 		
-	blacklist.add(filTerToAdd);
-	chrome.storage.local.set({'blacklist': blacklist});
-	$("#"+filterFormName + " :input").prop("disabled", true);
+		blacklist.add(filterToAdd);
+		chrome.storage.local.set({'blacklist': blacklist});
+		$("#"+filterFormName + " :input").prop("disabled", true);
+		
+	});
+		
+	
 }
 //http://stackoverflow.com/questions/8089875/show-a-leading-zero-if-a-number-is-less-than-10
 function pad(n) {
@@ -226,20 +232,23 @@ function pad(n) {
 }
 
 function refreshBlackList() {
+ 
  return new Promise(function (resolve, reject) {
     chrome.storage.local.get('blacklist', (function(item){
       if(item.blacklist === undefined || Object.keys(item.blacklist).length === 0){
-        this.blacklist = new Blacklist(defaultFilters)
-        chrome.storage.local.set({'blacklist': this.blacklist});
+       blacklist = new Blacklist(defaultFilters)
+        chrome.storage.local.set({'blacklist': blacklist});
         console.log('Blacklist created');
         resolve()
       } else {
-        this.blacklist = item.blacklist;
-        this.blacklist.__proto__ = Blacklist.prototype;
-        this.blacklist.restorePrototypes();
+        console.log("Blacklist in items : " + JSON.stringify(item.blacklist));
+		blacklist = item.blacklist;
+        blacklist.__proto__ = Blacklist.prototype;
+        blacklist.restorePrototypes();
         console.log('Blacklist loaded');
         resolve()
       }
+	  console.log("RefFilterList content from refreshBlackList : " + JSON.stringify(blacklist.refFilterList));
     }).bind(this));
   }.bind(this));
 }
