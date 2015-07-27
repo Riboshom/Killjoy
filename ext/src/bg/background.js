@@ -61,11 +61,13 @@ chrome.webNavigation.onCommitted.addListener(function(eventDetails){
   handleTab(eventDetails.url);
 });
 
+/*
 chrome.tabs.onActivated.addListener(function(activeTab) {
   chrome.tabs.get(activeTab.tabId, function(tabObject){
     handleTab(tabObject.url);
   });
 });
+*/
 
 chrome.alarms.onAlarm.addListener(function(alarm){
   var isExpirationTimer = false;
