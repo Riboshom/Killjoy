@@ -7,6 +7,7 @@ var policyTime;
 var policyTimeMin;
 var policyTimeHours;
 var argsArray;
+var blacklist;
 document.addEventListener('DOMContentLoaded', function()
 {
 	
@@ -19,31 +20,35 @@ document.addEventListener('DOMContentLoaded', function()
 //Add preexisting filters
 function populateContainer(){
 	
-	refreshBlackList();
+	refreshBlackList(function(){
+	
+		filterList = blacklist.refFilterList;
 
-	filterList = this.blacklist.refFilterList;
+		for (var index = 0; index < filterList.length; ++index) {
+			if(filterList[index].timeAllowedPolicy.hasOwnProperty("delay")){
+				policyType = "AFTER";
+				policyTime = (filterList[index].timeAllowedPolicy.delay);
+			}else{
+					
+				policyType = "AT";
+				policyTime = (filterList[index].timeAllowedPolicy.mark).getTime();
+					
+			}
+			policyTimeMin = ~~(policyTime/60000);
 
-	 for (var index = 0; index < filterList.length; ++index) {
-		if(filterList[index].timeAllowedPolicy.hasOwnProperty("delay")){
-			policyType = "AFTER";
-			policyTime = (filterList[index].timeAllowedPolicy.delay);
-		}else{
-				
-			policyType = "AT";
-			policyTime = (filterList[index].timeAllowedPolicy.mark).getTime();
-				
+			policyTimeHours = (Math.floor(policyTimeMin / 60) ) % 24;
+
+			argsArray[0]= filterList[index].filterPattern.replaceAll("/", "//");
+			argsArray[1]= policyTimeHours.toString() + ":" + pad(policyTimeMin % 60).toString();
+			argsArray[2]= policyType;
+
+			addFilterLine("true", argsArray, false);
+
 		}
-		policyTimeMin = ~~(policyTime/60000);
-		
-		policyTimeHours = (Math.floor(policyTimeMin / 60) ) % 24;
-		
-		argsArray[0]= filterList[index].filterPattern.replaceAll("/", "//");
-		argsArray[1]= policyTimeHours.toString() + ":" + pad(policyTimeMin % 60).toString();
-		argsArray[2]= policyType;
-		
-		addFilterLine("true", argsArray, false);
-		
-	}
+	
+	});
+
+	
 	
 	
 }
@@ -130,9 +135,9 @@ function addFilterLine(disabled, args, append){
 function removeFilter(removePattern)	 {
 	var filterToRemove;
 	refreshBlackList();
-	filterToRemove = this.blacklist.getFilterByPattern(removePattern);
-	this.blackList.remove(filterToRemove);
-	chrome.storage.local.set({'blacklist': this.blacklist});
+	filterToRemove = blacklist.getFilterByPattern(removePattern);
+	blacklist.remove(filterToRemove);
+	chrome.storage.local.set({'blacklist': blacklist});
 	location.reload();
 }
 
@@ -203,8 +208,8 @@ function addFilter(filterFormName){
 	
 	refreshBlackList();
 		
-	this.blacklist.add(filTerToAdd);
-	chrome.storage.local.set({'blacklist': this.blacklist});
+	blacklist.add(filTerToAdd);
+	chrome.storage.local.set({'blacklist': blacklist});
 	$("#"+filterFormName + " :input").prop("disabled", true);
 }
 //http://stackoverflow.com/questions/8089875/show-a-leading-zero-if-a-number-is-less-than-10
@@ -212,5 +217,25 @@ function pad(n) {
     return (n < 10) ? ("0" + n) : n;
 }
 
-
+function refreshBlackList(callback) {
+  chrome.storage.local.get('blacklist', (function(item){
+    if(item.blacklist === undefined || Object.keys(item.blacklist).length === 0){
+      blacklist = new Blacklist(defaultFilters);
+      chrome.storage.local.set({'blacklist': blacklist});
+      console.log('Blacklist created');
+    } else {
+      blacklist = item.blacklist;
+      blacklist.__proto__ = Blacklist.prototype;
+      blacklist.restorePrototypes();
+      console.log('Blacklist loaded');
+    }
+	var keys = [];
+	for(var key in blacklist){
+	keys.push(key);
+	}
+	console.log(keys.toString());
+	
+  }).bind(this));
+  callback();
+}
 console.log('Settings script loaded');
