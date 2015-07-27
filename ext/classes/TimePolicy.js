@@ -17,7 +17,7 @@ class TimePolicy {
       var minutesLeft = this.minutesLeftAfter(timeOffset)
       chrome.alarms.create(name, { delayInMinutes: minutesLeft })
       console.log("Alarm online : " + minutesLeft + " minutes left.")
-      resolve()
+      resolve(minutesLeft)
     }.bind(this));
   }
   

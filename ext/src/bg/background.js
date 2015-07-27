@@ -15,9 +15,9 @@
 
 var defaultFilters = [
   new Filter("*github.com*",
-    new TimePolicy("AFTER", 60),
-    function(){return true},
-    function(){return true})
+    new TimePolicy("AFTER", 0),
+    BlockingAction.popUp,
+    new TimePolicy("AFTER", 600)),
 ];
 //var defaultFilters = [];
 
@@ -34,7 +34,7 @@ var refreshBlacklist = function () {
         this.blacklist.__proto__ = Blacklist.prototype;
         this.blacklist.restorePrototypes();
         console.log('Blacklist loaded');
-        resolve()
+        resolve(blacklist)
       }
     }).bind(this));
   }.bind(this));
@@ -76,12 +76,14 @@ chrome.alarms.onAlarm.addListener(function(alarm){
 })
 
 function alarmCallback(alarm) {
-  var filter = this.blacklist.getFilterByPattern(alarm.name)
-  filter.timeUpPolicy.run()
+  refreshBlacklist().then(function(blacklist){
+    var filter = blacklist.getFilterByPattern(alarm.name)
+    filter.timeUpPolicy.run()
+  }.bind())
 }
 
 function handleTab(newUrl) {
-  this.blacklist.disengageActiveFilters().then(function() {
+  blacklist.disengageActiveFilters().then(function() {
     var matchingFilters = this.blacklist.hasMatchesFor(newUrl);
     if (matchingFilters.length == 0) console.log("\""+ newUrl +"\": No matches in the Blacklist");
 
