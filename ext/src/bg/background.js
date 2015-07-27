@@ -15,18 +15,22 @@ var defaultFilters = [
 //var defaultFilters = [];
 
 var refreshBlacklist = function () {
-  chrome.storage.local.get('blacklist', (function(item){
-    if(item.blacklist === undefined || Object.keys(item.blacklist).length === 0){
-      this.blacklist = new Blacklist(defaultFilters)
-      chrome.storage.local.set({'blacklist': this.blacklist});
-      console.log('Blacklist created');
-    } else {
-      this.blacklist = item.blacklist;
-      this.blacklist.__proto__ = Blacklist.prototype;
-      this.blacklist.restorePrototypes();
-      console.log('Blacklist loaded');
-    }
-  }).bind(this));
+  return new Promise(function (resolve, reject) {
+    chrome.storage.local.get('blacklist', (function(item){
+      if(item.blacklist === undefined || Object.keys(item.blacklist).length === 0){
+        this.blacklist = new Blacklist(defaultFilters)
+        chrome.storage.local.set({'blacklist': this.blacklist});
+        console.log('Blacklist created');
+        resolve()
+      } else {
+        this.blacklist = item.blacklist;
+        this.blacklist.__proto__ = Blacklist.prototype;
+        this.blacklist.restorePrototypes();
+        console.log('Blacklist loaded');
+        resolve()
+      }
+    }).bind(this));
+  }.bind(this));
 }
 /*
 chrome.storage.local.remove('blacklist', function() {

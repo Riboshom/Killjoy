@@ -7,7 +7,7 @@ class Blacklist {
     }
 
     add(filter) {
-      refFilterList.push(filter)
+      this.refFilterList.push(filter)
     }
 
     remove(soughtFilter) {

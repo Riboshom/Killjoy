@@ -9,7 +9,7 @@ var TimePolicy = (function () {
     _classCallCheck(this, TimePolicy);
 
     if (type === "AT") {
-      this.mark = new Date(msTime);
+      this.mark = new Date(minTime * 60000);
     } else if (type === "AFTER") {
       this.delay = minTime * 60000 //In ms
       ;
@@ -40,7 +40,7 @@ var TimePolicy = (function () {
           if (alarm !== undefined) {
             chrome.alarms.clear(name);
             var timeLeft = alarm.scheduledTime - Date.now();
-            console.log("Alarm offline : " + timeLeft / 60000 + "minutes left.");
+            console.log("Alarm offline : " + timeLeft / 60000 + " minutes left.");
             resolve(timeLeft);
           } else {
             resolve();
