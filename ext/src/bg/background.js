@@ -16,9 +16,10 @@
 var defaultFilters = [
   new Filter("*github.com*",
     new TimePolicy("AFTER", 0),
-    BlockingAction.popUp,
+    BlockingAction.library.popUp,
     new TimePolicy("AFTER", 600)),
 ];
+
 //var defaultFilters = [];
 
 var refreshBlacklist = function () {
