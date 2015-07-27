@@ -6,6 +6,13 @@
 //   "sample_setting": "This is how you use Store.js to remember values"
 //  });
 
+/* TODO :
+    Injecting content scripts
+    Reacting to alarms
+    Expiration alarms
+    What to do on browser close or sleep
+*/
+
 var defaultFilters = [
   new Filter("*github.com*",
     new TimePolicy("AFTER", 60),
@@ -54,6 +61,20 @@ chrome.tabs.onActivated.addListener(function(activeTab) {
     handleTab(tabObject.url);
   });
 });
+
+chrome.alarms.onAlarm.addListener(function(alarm){
+  var isExpirationTimer = false;
+  if(isExpirationTimer) {
+    //Placeholder for expiration alarms
+  } else {
+    alarmCallback(alarm)
+  }
+})
+
+function alarmCallback(alarm) {
+  var filter = this.blacklist.getFilterByPattern(alarm.name)
+  filter.timeUpPolicy.run()
+}
 
 function handleTab(newUrl) {
   this.blacklist.disengageActiveFilters().then(function() {

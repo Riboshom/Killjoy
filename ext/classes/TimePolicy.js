@@ -1,5 +1,6 @@
 class TimePolicy {
   constructor (type, minTime){ 
+    //TODO : Refactor this ugly hack into subclasses
     if (type === "AT") {
       this.mark = new Date(msTime)
     } else if (type === "AFTER") {

@@ -8,6 +8,7 @@ var TimePolicy = (function () {
   function TimePolicy(type, minTime) {
     _classCallCheck(this, TimePolicy);
 
+    //TODO : Refactor this ugly hack into subclasses
     if (type === "AT") {
       this.mark = new Date(msTime);
     } else if (type === "AFTER") {
@@ -40,7 +41,7 @@ var TimePolicy = (function () {
           if (alarm !== undefined) {
             chrome.alarms.clear(name);
             var timeLeft = alarm.scheduledTime - Date.now();
-            console.log("Alarm offline : " + timeLeft / 60000 + "minutes left.");
+            console.log("Alarm offline : " + timeLeft / 60000 + " minutes left.");
             resolve(timeLeft);
           } else {
             resolve();
