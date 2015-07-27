@@ -20,7 +20,9 @@
       "src/class/ActiveFilter.js",
       "src/class/Blacklist.js",
       "src/options_custom/lib",
-      "src/bg/background.js"
+      "src/bg/background.js",
+	  "src/options_custom/js/custom.js",
+	  "src/options_custom/js/custom.js"
     ],
     "persistent": false
   },
