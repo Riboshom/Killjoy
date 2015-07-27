@@ -8,15 +8,22 @@ var policyTimeMin;
 var policyTimeHours;
 
 var blacklist;
-document.addEventListener('DOMContentLoaded', function()
-{
+
+
+$(document).ready(function(){
+	
 	var emptyArray = [];
-	$("#addFilterButton").on('click', addFilterLine("false", emptyArray, true ));
 	populateContainer();
-}, false);
+	$("#addFilterButton").on('click', function(){
+		
+		addFilterLine("true", emptyArray, true )
+	
+	
+	});
+});
 
 
-  
+	  
 //Add preexisting filters
 function populateContainer(){
 	
@@ -55,6 +62,7 @@ function populateContainer(){
 function addFilterLine(disabled, args, append){
 		var div = document.createElement('div');
 		var newFilter;
+		console.log("Arguments length : " + args.length);
 		//var tableRow = document.createElement('tr');
 		if(args.length == 0){
 			
