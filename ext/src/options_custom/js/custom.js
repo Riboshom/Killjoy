@@ -6,12 +6,12 @@ var policyType;
 var policyTime;
 var policyTimeMin;
 var policyTimeHours;
-var argsArray;
+
 var blacklist;
 document.addEventListener('DOMContentLoaded', function()
 {
-	
-	document.getElementById('addFilterButton').addEventListener('click', addFilterLine);
+	var emptyArray = [];
+	$("#addFilterButton").on('click', addFilterLine("false", emptyArray, true ));
 	populateContainer();
 }, false);
 
@@ -20,10 +20,9 @@ document.addEventListener('DOMContentLoaded', function()
 //Add preexisting filters
 function populateContainer(){
 	
-	refreshBlackList(function(){
-	
+	refreshBlackList().then(function(){
+		var argsArray = [];
 		filterList = blacklist.refFilterList;
-
 		for (var index = 0; index < filterList.length; ++index) {
 			if(filterList[index].timeAllowedPolicy.hasOwnProperty("delay")){
 				policyType = "AFTER";
@@ -38,8 +37,8 @@ function populateContainer(){
 
 			policyTimeHours = (Math.floor(policyTimeMin / 60) ) % 24;
 
-			argsArray[0]= filterList[index].filterPattern.replaceAll("/", "//");
-			argsArray[1]= policyTimeHours.toString() + ":" + pad(policyTimeMin % 60).toString();
+			argsArray[0]= filterList[index].filterPattern.replace("/", "//");
+			argsArray[1]= pad(policyTimeHours.toString()) + ":" + pad(policyTimeMin % 60).toString() ;
 			argsArray[2]= policyType;
 
 			addFilterLine("true", argsArray, false);
@@ -134,11 +133,12 @@ function addFilterLine(disabled, args, append){
 
 function removeFilter(removePattern)	 {
 	var filterToRemove;
-	refreshBlackList();
+	refreshBlackList().then(function(){
 	filterToRemove = blacklist.getFilterByPattern(removePattern);
 	blacklist.remove(filterToRemove);
 	chrome.storage.local.set({'blacklist': blacklist});
 	location.reload();
+	});
 }
 
 function addFilter(filterFormName){
@@ -217,25 +217,22 @@ function pad(n) {
     return (n < 10) ? ("0" + n) : n;
 }
 
-function refreshBlackList(callback) {
-  chrome.storage.local.get('blacklist', (function(item){
-    if(item.blacklist === undefined || Object.keys(item.blacklist).length === 0){
-      blacklist = new Blacklist(defaultFilters);
-      chrome.storage.local.set({'blacklist': blacklist});
-      console.log('Blacklist created');
-    } else {
-      blacklist = item.blacklist;
-      blacklist.__proto__ = Blacklist.prototype;
-      blacklist.restorePrototypes();
-      console.log('Blacklist loaded');
-    }
-	var keys = [];
-	for(var key in blacklist){
-	keys.push(key);
-	}
-	console.log(keys.toString());
-	
-  }).bind(this));
-  callback();
+function refreshBlackList() {
+ return new Promise(function (resolve, reject) {
+    chrome.storage.local.get('blacklist', (function(item){
+      if(item.blacklist === undefined || Object.keys(item.blacklist).length === 0){
+        this.blacklist = new Blacklist(defaultFilters)
+        chrome.storage.local.set({'blacklist': this.blacklist});
+        console.log('Blacklist created');
+        resolve()
+      } else {
+        this.blacklist = item.blacklist;
+        this.blacklist.__proto__ = Blacklist.prototype;
+        this.blacklist.restorePrototypes();
+        console.log('Blacklist loaded');
+        resolve()
+      }
+    }).bind(this));
+  }.bind(this));
 }
 console.log('Settings script loaded');
