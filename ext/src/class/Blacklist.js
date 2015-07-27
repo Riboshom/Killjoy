@@ -20,7 +20,7 @@ var Blacklist = (function () {
   _createClass(Blacklist, [{
     key: "add",
     value: function add(filter) {
-      refFilterList.push(filter);
+      this.refFilterList.push(filter);
     }
   }, {
     key: "remove",

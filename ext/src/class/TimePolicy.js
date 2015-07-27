@@ -10,7 +10,7 @@ var TimePolicy = (function () {
 
     //TODO : Refactor this ugly hack into subclasses
     if (type === "AT") {
-      this.mark = new Date(msTime);
+      this.mark = new Date(minTime * 60000);
     } else if (type === "AFTER") {
       this.delay = minTime * 60000 //In ms
       ;
