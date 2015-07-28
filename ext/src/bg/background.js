@@ -29,13 +29,13 @@ var refreshBlacklist = function () {
         this.blacklist = new Blacklist(defaultFilters)
         chrome.storage.local.set({'blacklist': this.blacklist});
         console.log('Blacklist created');
-        resolve()
+        resolve(this.blacklist)
       } else {
         this.blacklist = item.blacklist;
         this.blacklist.__proto__ = Blacklist.prototype;
         this.blacklist.restorePrototypes();
         console.log('Blacklist loaded');
-        resolve(blacklist)
+        resolve(this.blacklist)
       }
     }).bind(this));
   }.bind(this));
@@ -81,6 +81,7 @@ chrome.alarms.onAlarm.addListener(function(alarm){
 function alarmCallback(alarm) {
   refreshBlacklist().then(function(blacklist){
     var filter = blacklist.getFilterByPattern(alarm.name)
+    console.log(JSON.stringify(filter))
     filter.timeUpPolicy.run()
   }.bind())
 }

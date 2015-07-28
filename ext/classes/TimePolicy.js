@@ -11,7 +11,6 @@ class TimePolicy {
   }
   
   declareAlarm(name, timeOffset = 0) {
-    console.log("Alarm declaration...")
     //timeOffset is in milliseconds
     return new Promise(function (resolve, reject) {
       var minutesLeft = this.minutesLeftAfter(timeOffset)

@@ -92,6 +92,7 @@ var Blacklist = (function () {
         filter.__proto__ = Filter.prototype;
         filter.timeAllowedPolicy.__proto__ = TimePolicy.prototype;
         filter.expirationPolicy.__proto__ = TimePolicy.prototype;
+        filter.timeUpPolicy.__proto__ = BlockingAction.prototype;
       });
     }
   }]);
