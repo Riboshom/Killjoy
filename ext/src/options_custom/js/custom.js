@@ -215,12 +215,12 @@ function addFilter(filterFormName){
 	
 	console.log("adding filter in addFilter : " + JSON.stringify(filterToAdd));
 	//document.getElementById(
-	
+	blacklist.add(filterToAdd);
+	chrome.storage.local.set({'blacklist': blacklist});
+	$("#"+filterFormName + " :input").prop("disabled", true);
 	refreshBlackList().then(function(filterToAdd){
 		
-		blacklist.add(filterToAdd);
-		chrome.storage.local.set({'blacklist': blacklist});
-		$("#"+filterFormName + " :input").prop("disabled", true);
+	
 		
 	});
 		
